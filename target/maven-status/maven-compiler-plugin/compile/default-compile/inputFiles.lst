@@ -1,1 +1,7 @@
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/MyApplication.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Carte.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Header.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Menu.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Plat.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Review.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/User.java
