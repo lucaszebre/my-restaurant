@@ -1,15 +1,21 @@
-package com.example.accessingdatamysql;
+package com.example.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne; 
+import jakarta.persistence.JoinColumn; 
+import java.util.Date;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Review {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
+
+  @ManyToOne
+  @JoinColumn (name= "plat_id")
 
   private String name;
 
@@ -50,7 +56,7 @@ public class Review {
   }
 
   public Date getDate(){
-    return data;
+    return date;
   }
 
   public void setNote(Number note){
