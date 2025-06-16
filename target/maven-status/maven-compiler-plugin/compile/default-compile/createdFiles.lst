@@ -1,7 +1,6 @@
 com/example/entities/Plat.class
 com/example/entities/Menu.class
 com/example/entities/Review.class
-UserController.class
 com/example/entities/Carte.class
 com/example/MyApplication.class
 com/example/entities/Header.class

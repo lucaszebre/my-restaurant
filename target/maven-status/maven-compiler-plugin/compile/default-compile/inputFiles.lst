@@ -7,3 +7,4 @@
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Review.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Role.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/User.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/UserRepository.java
