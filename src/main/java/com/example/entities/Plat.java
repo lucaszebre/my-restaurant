@@ -14,6 +14,7 @@ public class Plat {
 
   @ManyToOne
   @JoinColumn (name= "menu_id")
+  private Menu menu;
 
   private String name;
 
@@ -26,7 +27,7 @@ public class Plat {
   private String[] listAllergenes;
 
 
-  @OneToMany(mappedBy="review")
+  @OneToMany(mappedBy = "plat")
   private Set<Review> reviews;
 
 
