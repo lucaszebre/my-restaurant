@@ -12,6 +12,7 @@ public class Menu {
 
     @ManyToOne
     @JoinColumn (name= "carte_id")
+    private Carte carte;
 
     @OneToMany(mappedBy="menu")
     private Set<Plat> plats;
