@@ -12,7 +12,8 @@ public class Review {
 
   @ManyToOne
   @JoinColumn (name= "plat_id")
-
+  private Plat plat;
+  
   private String name;
 
   private String email;
