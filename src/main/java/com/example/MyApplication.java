@@ -17,6 +17,11 @@ public class MyApplication {
 		return "Hello World!";
 	}
 
+	@RequestMapping("/config")
+	public String configPage(){
+		return "config";
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(MyApplication.class, args);
 	}
