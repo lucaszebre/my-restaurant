@@ -25,6 +25,10 @@ public class User {
 
   private String name;
 
+  private String color;
+
+  private String url;
+
   @Column(nullable = false, unique = true)
   private String email;
   @Column(nullable = false)
@@ -62,5 +66,25 @@ public class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+
+  public String getColor(){
+    return color;
+  }
+  public void setColor(String color){
+    this.color = color;
+  }
+
+  public String getUrl(){
+    return url;
+  }
+
+  public String getPassword(){
+    return password;
+  }
+
+  public void setUrl(String url){
+    this.url = url;
   }
 }
