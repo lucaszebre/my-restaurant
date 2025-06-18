@@ -1,3 +1,7 @@
 ## to build with mavem base on the pom.xml
 
 mvn package
+
+## to run the server
+
+mvn spring-boot:run
