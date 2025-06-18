@@ -1,4 +1,8 @@
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/MyApplication.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/component/ConfigComponent.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/config/WebConfig.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/controller/HeaderController.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/controller/RestaurantConfigController.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/controller/UserController.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Carte.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Header.java
@@ -7,4 +11,11 @@
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Review.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/Role.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/entities/User.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/interceptor/configInterceptor.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/CarteRepository.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/HeaderRepository.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/MenuRepository.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/PlatRepository.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/ReviewRepository.java
+/home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/RoleRepository.java
 /home/lucas/epitech/my-restaurant/src/main/java/com/example/repositories/UserRepository.java

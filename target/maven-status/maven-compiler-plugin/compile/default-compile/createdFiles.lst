@@ -1,8 +1,8 @@
 com/example/entities/Plat.class
-com/example/entities/Menu.class
 com/example/entities/Review.class
+com/example/entities/User.class
+com/example/entities/Menu.class
 com/example/entities/Carte.class
 com/example/MyApplication.class
 com/example/entities/Header.class
-com/example/entities/User.class
 com/example/entities/Role.class
