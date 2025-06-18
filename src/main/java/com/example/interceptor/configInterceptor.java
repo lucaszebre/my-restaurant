@@ -2,6 +2,7 @@ package com.example.interceptor;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.example.controller.HeaderController;
@@ -12,6 +13,7 @@ import com.example.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Component
 public class configInterceptor implements HandlerInterceptor {
 
 
@@ -23,6 +25,11 @@ public class configInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,HttpServletResponse response, Object handler) throws Exception {
+        if(header.getUniqueHeader().isEmpty() || user.getUniqUser().isEmpty()){
+            response.sendRedirect("/config");
+
+            return false;
+        }
         Header uniqueHeader = header.getUniqueHeader().get(0);
         User uniqueUser = user.getUniqUser().get(0);
 
@@ -32,11 +39,18 @@ public class configInterceptor implements HandlerInterceptor {
         boolean isNamePresent =  uniqueHeader.getName().length() >0 ;
         boolean isUrlPresent = uniqueUser.getUrl().length() > 0;
 
-        return isBannerPresent &&
+        if( isBannerPresent &&
          isNamePresent &&
           isUrlPresent &&
            isColorPresent &&
-            isPasswordPresent ;
+            isPasswordPresent ){
+
+                return true;
+            };
+
+            response.sendRedirect("/config");
+
+            return false;
 
 
         }
