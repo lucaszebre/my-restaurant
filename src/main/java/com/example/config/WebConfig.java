@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(myConfigInterceptor)
                 .addPathPatterns("/") 
                 .excludePathPatterns("/css/**", "/js/**", "/images/**")
-                .excludePathPatterns("/config", "/config/**"); // <--- ADD THIS LINE to exclude the config path!
+                .excludePathPatterns("/admin/config", "/admin/config/**");
 
     }
 }
