@@ -1,6 +1,5 @@
 package com.example.controller;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,36 +14,33 @@ import com.example.repositories.UserRepository;
 @Controller
 public class UserController {
 
-
     @Autowired
     private UserRepository userRepository;
 
-
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public User getUserById(@PathVariable int id ){
         return userRepository.findById(id).orElseThrow(()->new RuntimeException("no user found"));
     }
 
-    @GetMapping()
+    @GetMapping("/users")
     public List<User> getUniqUser(){
         return userRepository.findAll();
     }
+    
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome, this endpoint is not secure";
     }
 
     @GetMapping("/user/userProfile")
-    @PreAuthorize("hasRole('USER')")  // Use hasRole for role-based access control
+    @PreAuthorize("hasRole('USER')")
     public String userProfile() {
         return "Welcome to User Profile";
     }
 
     @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasRole('ADMIN')")  // Use hasRole for role-based access control
+    @PreAuthorize("hasRole('ADMIN')")
     public String adminProfile() {
         return "Welcome to Admin Profile";
     }
-
-    
 }
