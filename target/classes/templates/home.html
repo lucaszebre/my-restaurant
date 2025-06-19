@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${restaurantConfig != null ? restaurantConfig.name : 'Mon Restaurant'}">Mon Restaurant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .header-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .header-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .dish-info {
+            padding: 20px;
+        }
+
+        .dish-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .dish-price {
+            font-size: 1.2rem;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .reviews-section {
+            background-color: #f8f9fa;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .review-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .review-rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+
+        .review-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .review-comment {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            margin-bottom: 20px;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header-content p {
+                font-size: 1.2rem;
+            }
+            
+            .section {
+                padding: 40px 20px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" th:style="'background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(\'/admin/files/' + ${restaurantConfig.photo} + '\');'">
+        <div class="header-content">
+            <h1 th:text="${restaurantConfig != null ? restaurantConfig.name : 'Mon Restaurant'}">Mon Restaurant</h1>
+            <p>Découvrez une expérience culinaire exceptionnelle</p>
+            <a href="#dishes" class="cta-button" th:style="'background-color: ' + ${restaurantConfig != null ? restaurantConfig.color : '#007bff'} + ';'">Voir nos plats</a>
+        </div>
+    </header>
+
+    <section id="dishes" class="section">
+        <div class="container">
+            <h2 class="section-title">Nos Plats Vedettes</h2>
+            <div class="dishes-grid" th:if="${featuredPlats != null and !featuredPlats.isEmpty()}">
+                <div class="dish-card" th:each="plat : ${featuredPlats}">
+                    <img th:if="${plat.photo != null}" th:src="@{'/admin/files/' + ${plat.photo}}" 
+                         th:alt="${plat.name}" class="dish-image">
+                    <div class="dish-info">
+                        <h3 class="dish-name" th:text="${plat.name}">Nom du plat</h3>
+                        <p class="dish-price" th:style="'color: ' + ${restaurantConfig != null ? restaurantConfig.color : '#007bff'} + ';'" th:text="${'€' + plat.price}">€0.00</p>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${featuredPlats == null or featuredPlats.isEmpty()}" style="text-align: center; color: #666;">
+                <p>Aucun plat disponible pour le moment.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section reviews-section">
+        <div class="container">
+            <h2 class="section-title">Avis de nos Clients</h2>
+            <div class="reviews-grid" th:if="${recentReviews != null and !recentReviews.isEmpty()}">
+                <div class="review-card" th:each="review : ${recentReviews}">
+                    <div class="review-header">
+                        <div>
+                            <div class="reviewer-name" th:text="${review.name}">Nom du client</div>
+                            <div class="review-date" th:text="${#dates.format(review.date, 'dd/MM/yyyy')}">Date</div>
+                        </div>
+                        <div class="review-rating">
+                            <span th:each="i : ${#numbers.sequence(1, review.note)}">★</span>
+                            <span th:each="i : ${#numbers.sequence(review.note + 1, 5)}">☆</span>
+                        </div>
+                    </div>
+                    <p class="review-comment" th:text="${review.comment}">Commentaire</p>
+                </div>
+            </div>
+            <div th:if="${recentReviews == null or recentReviews.isEmpty()}" style="text-align: center; color: #666;">
+                <p>Aucun avis disponible pour le moment.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <h3 th:text="${restaurantConfig != null ? restaurantConfig.name : 'Mon Restaurant'}">Mon Restaurant</h3>
+            <p th:if="${restaurantConfig != null and restaurantConfig.url != null}" th:text="${restaurantConfig.url}">URL du site</p>
+            <p>&copy; 2025 - Tous droits réservés</p>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -22,6 +22,7 @@
       }
       input[type="file"] {
           padding: 5px 0;
+          width: 100%;
       }
       input[type="color"] {
           height: 40px;
@@ -41,6 +42,21 @@
       .error-message { color: red; font-size: 0.9em; margin-top: 5px; }
       .success-message { color: green; font-weight: bold; text-align: center; margin-bottom: 20px; }
       .error { border-color: red; }
+      .file-preview {
+          margin-top: 10px;
+          padding: 10px;
+          background-color: #f8f9fa;
+          border-radius: 4px;
+          border: 1px solid #dee2e6;
+      }
+      .file-preview img {
+          max-width: 200px;
+          max-height: 100px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          display: block;
+          margin-top: 5px;
+      }
     </style>
   </head>
   <body>
@@ -61,34 +77,34 @@
         enctype="multipart/form-data"
       >
         <div class="form-group">
-          <label for="restaurantName"
+          <label for="name"
             >Nom du restaurant (Header & Titre des pages) :</label
           >
           <input
             type="text"
-            id="restaurantName"
-            th:field="*{restaurantName}"
-            th:classappend="${#fields.hasErrors('restaurantName')} ? 'error'"
+            id="name"
+            th:field="*{name}"
+            th:classappend="${#fields.hasErrors('name')} ? 'error'"
           />
           <p
-            th:if="${#fields.hasErrors('restaurantName')}"
-            th:errors="*{restaurantName}"
+            th:if="${#fields.hasErrors('name')}"
+            th:errors="*{name}"
             class="error-message"
           ></p>
         </div>
 
         <div class="form-group">
-          <label for="siteUrl">URL du site :</label>
+          <label for="url">URL du site :</label>
           <input
             type="url"
-            id="siteUrl"
-            th:field="*{siteUrl}"
+            id="url"
+            th:field="*{url}"
             placeholder="Ex: http://www.monsite.com"
-            th:classappend="${#fields.hasErrors('siteUrl')} ? 'error'"
+            th:classappend="${#fields.hasErrors('url')} ? 'error'"
           />
           <p
-            th:if="${#fields.hasErrors('siteUrl')}"
-            th:errors="*{siteUrl}"
+            th:if="${#fields.hasErrors('url')}"
+            th:errors="*{url}"
             class="error-message"
           ></p>
         </div>
@@ -109,31 +125,39 @@
         </div>
 
         <div class="form-group">
-          <label for="bannerPhoto">Photo de bannière (pour le header) :</label>
+          <label for="banner">Photo de bannière (pour le header) :</label>
           <input
             type="file"
-            id="bannerPhoto"
-            th:field="*{bannerPhoto}"
+            id="banner"
+            name="banner"
             accept="image/*"
           />
           <p
-            th:if="${#fields.hasErrors('bannerPhoto')}"
-            th:errors="*{bannerPhoto}"
+            th:if="${#fields.hasErrors('banner')}"
+            th:errors="*{banner}"
             class="error-message"
           ></p>
+          <div th:if="${restaurantConfig.photo != null and restaurantConfig.photo != ''}" class="file-preview">
+            <p><strong>Image actuelle :</strong></p>
+            <img th:src="@{'/admin/files/' + ${restaurantConfig.photo}}" 
+                 alt="Bannière actuelle" 
+                 style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;" />
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="adminPassword">Mot de passe Administrateur :</label>
+          <label for="adminPasswordpassword"
+            >Mot de passe Administrateur :</label
+          >
           <input
             type="password"
-            id="adminPassword"
-            th:field="*{adminPassword}"
-            th:classappend="${#fields.hasErrors('adminPassword')} ? 'error'"
+            id="password"
+            th:field="*{password}"
+            th:classappend="${#fields.hasErrors('password')} ? 'error'"
           />
           <p
-            th:if="${#fields.hasErrors('adminPassword')}"
-            th:errors="*{adminPassword}"
+            th:if="${#fields.hasErrors('password')}"
+            th:errors="*{password}"
             class="error-message"
           ></p>
           <small>Min : 8 caractères, 1 minuscule, 1 majuscule, 1 nombre.</small>
@@ -142,5 +166,35 @@
         <button type="submit">Enregistrer la Configuration</button>
       </form>
     </div>
+
+    <script>
+      // File preview functionality
+      document.getElementById('banner').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            // Remove existing preview
+            const existingPreview = document.querySelector('.file-preview-new');
+            if (existingPreview) {
+              existingPreview.remove();
+            }
+            
+            // Create new preview
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'file-preview file-preview-new';
+            previewDiv.innerHTML = `
+              <p><strong>Nouvelle image sélectionnée :</strong></p>
+              <img src="${e.target.result}" alt="Aperçu" />
+            `;
+            
+            // Insert after the file input
+            const fileInput = document.getElementById('banner');
+            fileInput.parentNode.insertBefore(previewDiv, fileInput.nextSibling);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
   </body>
 </html>
