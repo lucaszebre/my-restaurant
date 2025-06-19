@@ -5,3 +5,6 @@ mvn package
 ## to run the server
 
 mvn spring-boot:run
+
+
+sudo mysql -u root -p
