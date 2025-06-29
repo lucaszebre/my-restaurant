@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Cartes</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .header { background-color: #333; color: white; padding: 20px; margin-bottom: 20px; }
+      .container { max-width: 1200px; margin: 0 auto; }
+      .btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin: 5px; }
+      .btn-primary { background-color: #007bff; color: white; }
+      .btn-success { background-color: #28a745; color: white; }
+      .btn-warning { background-color: #ffc107; color: black; }
+      .btn-danger { background-color: #dc3545; color: white; }
+      .btn-secondary { background-color: #6c757d; color: white; }
+      .btn-info { background-color: #17a2b8; color: white; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+      th { background-color: #f2f2f2; }
+      .status-active { color: #28a745; font-weight: bold; }
+      .status-inactive { color: #dc3545; font-weight: bold; }
+      .actions { white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Gestion des Cartes</h1>
+      <a href="/admin" class="btn btn-secondary">Retour au Dashboard</a>
+    </div>
+
+    <div class="container">
+      <div style="margin-bottom: 20px;">
+        <a href="/admin/cartes/new" class="btn btn-success">Nouvelle Carte</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="carte : ${cartes}">
+            <td th:text="${carte.id}">1</td>
+            <td th:text="${carte.name}">Carte principale</td>
+            <td th:text="${carte.description}">Description de la carte</td>
+            <td>
+              <span th:if="${carte.active}" class="status-active">Active</span>
+              <span th:unless="${carte.active}" class="status-inactive"
+                >Inactive</span
+              >
+            </td>
+            <td class="actions">
+              <a
+                th:href="@{/admin/cartes/{id}/plats(id=${carte.id})}"
+                class="btn btn-info"
+                >Voir les plats</a
+              >
+              <a
+                th:href="@{/admin/cartes/edit/{id}(id=${carte.id})}"
+                class="btn btn-warning"
+                >Modifier</a
+              >
+              <form
+                th:action="@{/admin/cartes/toggle/{id}(id=${carte.id})}"
+                method="post"
+                style="display: inline;"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-secondary"
+                  th:text="${carte.active ? 'Désactiver' : 'Activer'}"
+                >
+                  Toggle
+                </button>
+              </form>
+              <form
+                th:action="@{/admin/cartes/delete/{id}(id=${carte.id})}"
+                method="post"
+                style="display: inline;"
+                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette carte ?');"
+              >
+                <button type="submit" class="btn btn-danger">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(cartes)}">
+            <td
+              colspan="5"
+              style="text-align: center; padding: 20px; color: #666;"
+            >
+              Aucune carte trouvée.
+              <a href="/admin/cartes/new">Créer la première carte</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

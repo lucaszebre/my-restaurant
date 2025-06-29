@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html
+  lang="fr"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title}">Notre Carte</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          background-color: #f8f9fa;
+      }
+
+      .header {
+          color: white;
+          text-align: center;
+          padding: 3rem 2rem;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.3);
+          z-index: 1;
+      }
+
+      .header-content {
+          position: relative;
+          z-index: 2;
+      }
+
+      .header h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+
+      .header p {
+          font-size: 1.3rem;
+          opacity: 0.9;
+          max-width: 600px;
+          margin: 0 auto;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 2rem;
+      }
+
+      .nav-tabs {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 3rem;
+          flex-wrap: wrap;
+          gap: 1rem;
+      }
+
+      .nav-tab {
+          padding: 1rem 2rem;
+          background: white;
+          border: 2px solid;
+          border-radius: 25px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          text-decoration: none;
+      }
+
+      .nav-tab:hover,
+      .nav-tab.active {
+          color: white;
+          border-color: inherit;
+          transform: translateY(-2px);
+      }
+
+      .tab-content {
+          display: none;
+      }
+
+      .tab-content.active {
+          display: block;
+      }
+
+      .section {
+          background: white;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          margin-bottom: 3rem;
+          overflow: hidden;
+      }
+
+      .section-header {
+          color: white;
+          padding: 2rem;
+          text-align: center;
+      }
+
+      .section-header h2 {
+          font-size: 2rem;
+          margin-bottom: 0.5rem;
+      }
+
+      .section-header p {
+          opacity: 0.9;
+          font-size: 1.1rem;
+      }
+
+      .plats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 2rem;
+          padding: 2rem;
+      }
+
+      .plat-card {
+          background: #f8f9fa;
+          border-radius: 15px;
+          overflow: hidden;
+          transition: transform 0.3s ease;
+          border: 1px solid #e9ecef;
+      }
+
+      .plat-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      }
+
+      .plat-photo {
+          width: 100%;
+          height: 200px;
+          overflow: hidden;
+      }
+
+      .plat-photo img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+
+      .plat-info {
+          padding: 1.5rem;
+      }
+
+      .plat-title {
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 0.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .plat-price {
+          color: white;
+          padding: 0.3rem 0.8rem;
+          border-radius: 15px;
+          font-weight: 600;
+      }
+
+      .plat-category {
+          color: white;
+          padding: 0.2rem 0.6rem;
+          border-radius: 10px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+          display: inline-block;
+      }
+
+      .plat-description {
+          color: #666;
+          margin-bottom: 1rem;
+          line-height: 1.5;
+      }
+
+      .plat-allergens {
+          margin-top: 1rem;
+      }
+
+      .allergen-tag {
+          display: inline-block;
+          background: #dc3545;
+          color: white;
+          padding: 0.2rem 0.5rem;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          margin: 0.2rem;
+      }
+
+      .menu-section {
+          background: white;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          margin-bottom: 3rem;
+          overflow: hidden;
+      }
+
+      .menu-header {
+          color: white;
+          padding: 2rem;
+          text-align: center;
+      }
+
+      .menu-header h2 {
+          font-size: 2rem;
+          margin-bottom: 0.5rem;
+      }
+
+      .menu-header p {
+          opacity: 0.9;
+          font-size: 1.1rem;
+      }
+
+      .menu-price {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-top: 1rem;
+      }
+
+      .menu-sections {
+          padding: 2rem;
+      }
+
+      .menu-section-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 1.5rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid;
+      }
+
+      .menu-plats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+      }
+
+      .menu-plat-card {
+          background: #f8f9fa;
+          border-radius: 10px;
+          padding: 1.5rem;
+          border-left: 4px solid;
+      }
+
+      .menu-plat-header {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1rem;
+      }
+
+      .menu-plat-content {
+          flex: 1;
+      }
+
+      .menu-plat-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 0.5rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .menu-plat-price {
+          color: white;
+          padding: 0.2rem 0.6rem;
+          border-radius: 10px;
+          font-weight: 600;
+          font-size: 0.9rem;
+      }
+
+      .menu-plat-description {
+          color: #666;
+          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
+          line-height: 1.4;
+      }
+
+      .menu-plat-category {
+          margin-bottom: 0.5rem;
+      }
+
+      .menu-plat-allergens {
+          margin-top: 0.5rem;
+          padding-top: 0.5rem;
+          border-top: 1px solid #e9ecef;
+      }
+
+      .filter-buttons {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+          margin-bottom: 2rem;
+      }
+
+      .filter-btn {
+          padding: 0.5rem 1rem;
+          background: white;
+          border: 2px solid;
+          border-radius: 20px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active {
+          color: white;
+          border-color: inherit;
+          transform: translateY(-2px);
+      }
+
+      .back-btn {
+          display: inline-block;
+          padding: 0.75rem 1.5rem;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          margin-bottom: 2rem;
+      }
+
+      .back-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+
+      @media (max-width: 768px) {
+          .header h1 {
+              font-size: 2rem;
+          }
+
+          .nav-tabs {
+              flex-direction: column;
+              align-items: center;
+          }
+
+          .plats-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .menu-plats {
+              grid-template-columns: 1fr;
+          }
+      }
+    </style>
+  </head>
+  <body>
+      <div class="nav-tabs">
+        <a
+          href="#cartes"
+          class="nav-tab active"
+          th:style="'border-color: ' + ${config.color != null ? config.color : '#667eea'} + '; color: ' + ${config.color != null ? config.color : '#667eea'}"
+          onclick="showTab('cartes')"
+          >Nos Cartes</a
+        >
+        <a
+          href="#menus"
+          class="nav-tab"
+          th:style="'border-color: ' + ${config.color != null ? config.color : '#667eea'} + '; color: ' + ${config.color != null ? config.color : '#667eea'}"
+          onclick="showTab('menus')"
+          >Nos Menus</a
+        >
+      </div>
+
+      <div class="container">
+        <div id="cartes" class="tab-content active">
+          <div th:each="carte : ${cartes}" class="section">
+            <div
+              class="section-header"
+              th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+            >
+              <h2 th:text="${carte.name}">Nom de la Carte</h2>
+              <p th:text="${carte.description}">Description de la carte</p>
+            </div>
+
+            <div class="filter-buttons" th:if="${carte.plats != null and !carte.plats.empty}">
+              <button
+                class="filter-btn active"
+                th:style="'border-color: ' + ${config.color != null ? config.color : '#667eea'} + '; color: ' + ${config.color != null ? config.color : '#667eea'}"
+                onclick="filterPlats('all', this)"
+              >
+                Tous
+              </button>
+              <button
+                class="filter-btn"
+                th:each="plat : ${carte.plats}"
+                th:if="${plat.category != null}"
+                th:style="'border-color: ' + ${config.color != null ? config.color : '#667eea'} + '; color: ' + ${config.color != null ? config.color : '#667eea'}"
+                th:text="${plat.category}"
+                th:data-category="${plat.category}"
+              >
+                Catégorie
+              </button>
+            </div>
+
+            <div class="plats-grid" th:if="${carte.plats != null and !carte.plats.empty}">
+              <div
+                th:each="plat : ${carte.plats}"
+                class="plat-card"
+                th:attr="data-category=${plat.category}"
+              >
+                <div class="plat-photo" th:if="${plat.photo != null}">
+                  <img
+                    th:src="@{'/uploads/plats/' + ${plat.photo}}"
+                    th:alt="${plat.name}"
+                  />
+                </div>
+                <div class="plat-photo" th:if="${plat.photo == null}">
+                  <div
+                    style="width: 100%; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;"
+                  >
+                    <i class="fas fa-utensils" style="font-size: 3rem;"></i>
+                  </div>
+                </div>
+                <div class="plat-info">
+                  <div class="plat-title">
+                    <span th:text="${plat.name}">Nom du plat</span>
+                    <span
+                      class="plat-price"
+                      th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+                      th:text="${plat.price + '€'}"
+                      >15€</span
+                    >
+                  </div>
+                  <span
+                    class="plat-category"
+                    th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+                    th:text="${plat.category != null ? plat.category : 'Autres'}"
+                    >Catégorie</span
+                  >
+                  <p
+                    class="plat-description"
+                    th:text="${plat.description != null ? plat.description : 'Aucune description disponible'}"
+                  >
+                    Description du plat
+                  </p>
+                  <div
+                    class="plat-allergens"
+                    th:if="${plat.allergens != null and !plat.allergens.isEmpty()}"
+                  >
+                    <strong>Allergènes:</strong>
+                    <span
+                      th:each="allergen : ${plat.allergens.split(',')}"
+                      class="allergen-tag"
+                      th:text="${allergen.trim()}"
+                      >Allergène</span
+                    >
+                  </div>
+                  <div
+                    class="plat-actions"
+                    style="margin-top: 1rem; text-align: center;"
+                  >
+                    <a
+                      th:href="@{/plat/{id}(id=${plat.id})}"
+                      th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 5px; font-size: 0.9rem;'"
+                    >
+                      <i class="fas fa-eye"></i> Voir détails
+                    </a>
+                    <a
+                      th:href="@{/review/{platId}(platId=${plat.id})}"
+                      th:style="'background: #28a745; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 5px; font-size: 0.9rem; margin-left: 0.5rem;'"
+                    >
+                      <i class="fas fa-star"></i> Avis
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              th:if="${carte.plats == null or carte.plats.empty}"
+              style="text-align: center; padding: 3rem; color: #666;"
+            >
+              <i
+                class="fas fa-utensils"
+                style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"
+              ></i>
+              <h3>Aucun plat dans cette carte</h3>
+              <p>Les plats de cette carte seront bientôt disponibles.</p>
+            </div>
+          </div>
+
+          <div
+            th:if="${cartes == null or cartes.isEmpty()}"
+            style="text-align: center; padding: 4rem; color: #666;"
+          >
+            <i
+              class="fas fa-book-open"
+              style="font-size: 4rem; margin-bottom: 2rem; opacity: 0.5;"
+            ></i>
+            <h2>Aucune carte disponible</h2>
+            <p>Nos cartes seront bientôt disponibles.</p>
+          </div>
+        </div>
+
+        <div id="menus" class="tab-content">
+          <div th:each="menu : ${menus}" class="section">
+            <div
+              class="section-header"
+              th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+            >
+              <h2 th:text="${menu.name}">Nom du Menu</h2>
+              <p th:text="${menu.description}">Description du menu</p>
+              <div class="menu-price" th:if="${menu.price != null}">
+                <span th:text="${menu.price + '€'}">Prix</span>
+              </div>
+            </div>
+
+            <div th:each="section : ${menu.sections}" class="menu-section">
+              <h3
+                class="menu-section-title"
+                th:style="'border-bottom-color: ' + ${config.color != null ? config.color : '#667eea'}"
+                th:text="${section.name}"
+              >
+                Nom de la section
+              </h3>
+              <div class="menu-plats">
+                <div
+                  th:each="plat : ${section.plats}"
+                  class="menu-plat-card"
+                  th:style="'border-left-color: ' + ${config.color != null ? config.color : '#667eea'}"
+                >
+                  <div class="menu-plat-header">
+                    <div class="menu-plat-photo" th:if="${plat.photo != null}">
+                      <img
+                        th:src="@{'/uploads/plats/' + ${plat.photo}}"
+                        th:alt="${plat.name}"
+                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                      />
+                    </div>
+                    <div class="menu-plat-photo" th:if="${plat.photo == null}">
+                      <div
+                        style="width: 80px; height: 80px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #999;"
+                      >
+                        <i class="fas fa-utensils"></i>
+                      </div>
+                    </div>
+                    <div class="menu-plat-content">
+                      <div class="menu-plat-title">
+                        <span th:text="${plat.name}">Nom du plat</span>
+                        <span
+                          class="menu-plat-price"
+                          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+                          th:text="${plat.price + '€'}"
+                          >15€</span
+                        >
+                      </div>
+                      <p
+                        class="menu-plat-description"
+                        th:text="${plat.description != null ? plat.description : 'Aucune description disponible'}"
+                      >
+                        Description du plat
+                      </p>
+                      <div
+                        class="menu-plat-category"
+                        th:if="${plat.category != null}"
+                      >
+                        <span
+                          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem;'"
+                          th:text="${plat.category}"
+                          >Catégorie</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="menu-plat-allergens"
+                    th:if="${plat.allergens != null and !plat.allergens.isEmpty()}"
+                  >
+                    <strong>Allergènes:</strong>
+                    <span
+                      th:each="allergen : ${plat.allergens.split(',')}"
+                      class="allergen-tag"
+                      th:text="${allergen.trim()}"
+                      >Allergène</span
+                    >
+                  </div>
+                  <div
+                    class="menu-plat-actions"
+                    style="margin-top: 1rem; text-align: center;"
+                  >
+                    <a
+                      th:href="@{/plat/{id}(id=${plat.id})}"
+                      th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white; padding: 0.4rem 0.8rem; text-decoration: none; border-radius: 5px; font-size: 0.8rem;'"
+                    >
+                      <i class="fas fa-eye"></i> Détails
+                    </a>
+                    <a
+                      th:href="@{/review/{platId}(platId=${plat.id})}"
+                      th:style="'background: #28a745; color: white; padding: 0.4rem 0.8rem; text-decoration: none; border-radius: 5px; font-size: 0.8rem; margin-left: 0.5rem;'"
+                    >
+                      <i class="fas fa-star"></i> Avis
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div th:if="${menu.directPlats != null and !menu.directPlats.empty}">
+              <h3
+                class="menu-section-title"
+                th:style="'border-bottom-color: ' + ${config.color != null ? config.color : '#667eea'}"
+              >
+                Plats
+              </h3>
+              <div class="menu-plats">
+                <div
+                  th:each="plat : ${menu.directPlats}"
+                  class="menu-plat-card"
+                  th:style="'border-left-color: ' + ${config.color != null ? config.color : '#667eea'}"
+                >
+                  <div class="menu-plat-header">
+                    <div class="menu-plat-photo" th:if="${plat.photo != null}">
+                      <img
+                        th:src="@{'/uploads/plats/' + ${plat.photo}}"
+                        th:alt="${plat.name}"
+                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                      />
+                    </div>
+                    <div class="menu-plat-photo" th:if="${plat.photo == null}">
+                      <div
+                        style="width: 80px; height: 80px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #999;"
+                      >
+                        <i class="fas fa-utensils"></i>
+                      </div>
+                    </div>
+                    <div class="menu-plat-content">
+                      <div class="menu-plat-title">
+                        <span th:text="${plat.name}">Nom du plat</span>
+                        <span
+                          class="menu-plat-price"
+                          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'}"
+                          th:text="${plat.price + '€'}"
+                          >15€</span
+                        >
+                      </div>
+                      <p
+                        class="menu-plat-description"
+                        th:text="${plat.description != null ? plat.description : 'Aucune description disponible'}"
+                      >
+                        Description du plat
+                      </p>
+                      <div
+                        class="menu-plat-category"
+                        th:if="${plat.category != null}"
+                      >
+                        <span
+                          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem;'"
+                          th:text="${plat.category}"
+                          >Catégorie</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="menu-plat-allergens"
+                    th:if="${plat.allergens != null and !plat.allergens.isEmpty()}"
+                  >
+                    <strong>Allergènes:</strong>
+                    <span
+                      th:each="allergen : ${plat.allergens.split(',')}"
+                      class="allergen-tag"
+                      th:text="${allergen.trim()}"
+                      >Allergène</span
+                    >
+                  </div>
+                  <div
+                    class="menu-plat-actions"
+                    style="margin-top: 1rem; text-align: center;"
+                  >
+                    <a
+                      th:href="@{/plat/{id}(id=${plat.id})}"
+                      th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white; padding: 0.4rem 0.8rem; text-decoration: none; border-radius: 5px; font-size: 0.8rem;'"
+                    >
+                      <i class="fas fa-eye"></i> Détails
+                    </a>
+                    <a
+                      th:href="@{/review/{platId}(platId=${plat.id})}"
+                      th:style="'background: #28a745; color: white; padding: 0.4rem 0.8rem; text-decoration: none; border-radius: 5px; font-size: 0.8rem; margin-left: 0.5rem;'"
+                    >
+                      <i class="fas fa-star"></i> Avis
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              th:if="${(menu.sections == null or menu.sections.empty) and (menu.directPlats == null or menu.directPlats.empty)}"
+              style="text-align: center; padding: 3rem; color: #666;"
+            >
+              <i
+                class="fas fa-clipboard-list"
+                style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"
+              ></i>
+              <h3>Aucun plat dans ce menu</h3>
+              <p>Les plats de ce menu seront bientôt disponibles.</p>
+            </div>
+          </div>
+
+          <div
+            th:if="${menus == null or menus.isEmpty()}"
+            style="text-align: center; padding: 4rem; color: #666;"
+          >
+            <i
+              class="fas fa-clipboard-list"
+              style="font-size: 4rem; margin-bottom: 2rem; opacity: 0.5;"
+            ></i>
+            <h2>Aucun menu disponible</h2>
+            <p>Nos menus seront bientôt disponibles.</p>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="/"
+        class="back-btn"
+        th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white;'"
+      >
+        <i class="fas fa-arrow-left"></i> Retour à l'accueil
+      </a>
+    </div>
+
+    <script>
+      function showTab(tabName) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.nav-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add('active');
+
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+      }
+
+      function filterPlats(category, button) {
+        // Remove active class from all filter buttons in the same section
+        const buttons = button.parentElement.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to clicked button
+        button.classList.add('active');
+
+        // Get all plat cards in the current section
+        const platCards = button.closest('.section').querySelectorAll('.plat-card');
+
+        platCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-category');
+          if (category === 'all' || cardCategory === category) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+
+      // Event delegation for filter buttons
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.filter-btn').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            const category = btn.getAttribute('data-category');
+            filterPlats(category, btn);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

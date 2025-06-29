@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${plat.id != null ? 'Modifier le Plat' : 'Nouveau Plat'}">
+      Plat Form
+    </title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .header { background-color: #333; color: white; padding: 20px; margin-bottom: 20px; }
+      .container { max-width: 800px; margin: 0 auto; }
+      .form-group { margin-bottom: 20px; }
+      label { display: block; margin-bottom: 5px; font-weight: bold; }
+      input[type="text"], input[type="number"], input[type="file"], textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+      textarea { height: 100px; resize: vertical; }
+      .btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin: 5px; border: none; cursor: pointer; }
+      .btn-primary { background-color: #007bff; color: white; }
+      .btn-secondary { background-color: #6c757d; color: white; }
+      .error { color: red; font-size: 0.9em; margin-top: 5px; }
+      .price-input { position: relative; }
+      .price-input input { padding-left: 30px; }
+      .price-input:before { content: "€"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #666; z-index: 1; }
+      .allergens-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+      .allergen-checkbox { display: flex; align-items: center; gap: 5px; }
+      .allergen-checkbox input[type="checkbox"] { width: auto; }
+      .allergen-checkbox label { font-weight: normal; margin: 0; }
+      .association-group { display: flex; gap: 20px; }
+      .association-group .form-group { flex: 1; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1 th:text="${plat.id != null ? 'Modifier le Plat' : 'Nouveau Plat'}">
+        Plat Form
+      </h1>
+      <a href="/admin/plats" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+
+    <div class="container">
+      <form
+        th:action="${plat.id != null ? '/admin/plats/edit/' + plat.id : '/admin/plats/new'}"
+        th:object="${plat}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group">
+          <label for="name">Nom du plat *</label>
+          <input type="text" id="name" th:field="*{name}" required />
+          <div
+            th:if="${#fields.hasErrors('name')}"
+            th:errors="*{name}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            th:field="*{description}"
+            placeholder="Description du plat..."
+          ></textarea>
+          <div
+            th:if="${#fields.hasErrors('description')}"
+            th:errors="*{description}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Catégorie *</label>
+          <select id="category" th:field="*{category}" required>
+            <option value="">Sélectionner une catégorie</option>
+            <option value="Entrées">Entrées</option>
+            <option value="Plats principaux">Plats principaux</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Boissons">Boissons</option>
+            <option value="Apéritifs">Apéritifs</option>
+            <option value="Salades">Salades</option>
+            <option value="Soupes">Soupes</option>
+            <option value="Pâtes">Pâtes</option>
+            <option value="Viandes">Viandes</option>
+            <option value="Poissons">Poissons</option>
+            <option value="Végétarien">Végétarien</option>
+          </select>
+          <div
+            th:if="${#fields.hasErrors('category')}"
+            th:errors="*{category}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="form-group">
+          <label for="photo">Photo du plat</label>
+          <input type="file" id="photo" name="photoFile" accept="image/*" />
+          <div
+            th:if="${#fields.hasErrors('photo')}"
+            th:errors="*{photo}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="form-group">
+          <label for="price">Prix en euros *</label>
+          <div class="price-input">
+            <input
+              type="number"
+              id="price"
+              th:field="*{price}"
+              step="0.01"
+              min="0"
+              required
+            />
+          </div>
+          <div
+            th:if="${#fields.hasErrors('price')}"
+            th:errors="*{price}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="association-group">
+          <div class="form-group">
+            <label for="menu">Menu</label>
+            <select id="menu" th:field="*{menu}">
+              <option value="">Aucun menu</option>
+              <option
+                th:each="menu : ${menus}"
+                th:value="${menu.id}"
+                th:text="${menu.name}"
+              >
+                Menu
+              </option>
+            </select>
+            <div
+              th:if="${#fields.hasErrors('menu')}"
+              th:errors="*{menu}"
+              class="error"
+            ></div>
+          </div>
+
+          <div class="form-group">
+            <label for="carte">Carte</label>
+            <select id="carte" th:field="*{carte}">
+              <option value="">Aucune carte</option>
+              <option
+                th:each="carte : ${cartes}"
+                th:value="${carte.id}"
+                th:text="${carte.name}"
+              >
+                Carte
+              </option>
+            </select>
+            <div
+              th:if="${#fields.hasErrors('carte')}"
+              th:errors="*{carte}"
+              class="error"
+            ></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Allergènes contenus dans le plat</label>
+          <div class="allergens-list">
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="gluten"
+                name="allergens"
+                value="Gluten"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Gluten')}"
+              />
+              <label for="gluten">Gluten</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="lactose"
+                name="allergens"
+                value="Lactose"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Lactose')}"
+              />
+              <label for="lactose">Lactose</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="oeufs"
+                name="allergens"
+                value="Œufs"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Œufs')}"
+              />
+              <label for="oeufs">Œufs</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="poissons"
+                name="allergens"
+                value="Poissons"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Poissons')}"
+              />
+              <label for="poissons">Poissons</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="crustaces"
+                name="allergens"
+                value="Crustacés"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Crustacés')}"
+              />
+              <label for="crustaces">Crustacés</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="arachides"
+                name="allergens"
+                value="Arachides"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Arachides')}"
+              />
+              <label for="arachides">Arachides</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="soja"
+                name="allergens"
+                value="Soja"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Soja')}"
+              />
+              <label for="soja">Soja</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="fruits"
+                name="allergens"
+                value="Fruits à coque"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Fruits à coque')}"
+              />
+              <label for="fruits">Fruits à coque</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="celeri"
+                name="allergens"
+                value="Céleri"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Céleri')}"
+              />
+              <label for="celeri">Céleri</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="moutarde"
+                name="allergens"
+                value="Moutarde"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Moutarde')}"
+              />
+              <label for="moutarde">Moutarde</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="sulfites"
+                name="allergens"
+                value="Sulfites"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Sulfites')}"
+              />
+              <label for="sulfites">Sulfites</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="lupin"
+                name="allergens"
+                value="Lupin"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Lupin')}"
+              />
+              <label for="lupin">Lupin</label>
+            </div>
+            <div class="allergen-checkbox">
+              <input
+                type="checkbox"
+                id="mollusques"
+                name="allergens"
+                value="Mollusques"
+                th:checked="${plat.allergens != null and #strings.contains(plat.allergens, 'Mollusques')}"
+              />
+              <label for="mollusques">Mollusques</label>
+            </div>
+          </div>
+          <div
+            th:if="${#fields.hasErrors('allergens')}"
+            th:errors="*{allergens}"
+            class="error"
+          ></div>
+        </div>
+
+        <div class="form-group">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            th:text="${plat.id != null ? 'Mettre à jour' : 'Créer'}"
+          >
+            Sauvegarder
+          </button>
+          <a href="/admin/plats" class="btn btn-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // JavaScript to handle allergens checkbox selection
+      document.addEventListener('DOMContentLoaded', function() {
+        const allergenCheckboxes = document.querySelectorAll('input[name="allergens"]');
+        const allergensField = document.createElement('input');
+        allergensField.type = 'hidden';
+        allergensField.name = 'allergens';
+        allergensField.id = 'allergens-hidden';
+        document.querySelector('form').appendChild(allergensField);
+
+        function updateAllergensField() {
+          const selectedAllergens = Array.from(allergenCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+          allergensField.value = selectedAllergens.join(', ');
+        }
+
+        allergenCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', updateAllergensField);
+        });
+
+        // Initialize the hidden field
+        updateAllergensField();
+      });
+    </script>
+  </body>
+</html>

@@ -4,143 +4,521 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Configuration du Restaurant</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-      .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
-      h1 { color: #333; text-align: center; margin-bottom: 30px; }
-      .form-group { margin-bottom: 15px; }
-      label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 20px;
+        background-color: #f8f9fa;
+        line-height: 1.6;
+      }
+      .container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        max-width: 800px;
+        margin: auto;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+      }
+      .section {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        background: #fafbfc;
+      }
+      .section h3 {
+        color: #667eea;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.3rem;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+      }
       input[type="text"],
       input[type="url"],
       input[type="password"],
-      input[type="color"] {
-          width: calc(100% - 22px);
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
+      input[type="color"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="number"],
+      textarea {
+          width: 100%;
+          padding: 12px;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
           box-sizing: border-box;
+          font-size: 14px;
+          transition: border-color 0.3s ease;
+      }
+      input:focus,
+      textarea:focus {
+          outline: none;
+          border-color: #667eea;
       }
       input[type="file"] {
-          padding: 5px 0;
+          padding: 10px;
+          border: 2px dashed #e9ecef;
+          border-radius: 8px;
+          background: #f8f9fa;
       }
       input[type="color"] {
-          height: 40px;
+          height: 50px;
+          cursor: pointer;
+      }
+      textarea {
+          min-height: 100px;
+          resize: vertical;
+      }
+      .checkbox-group {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 15px;
+          margin-top: 10px;
+      }
+      .checkbox-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 15px;
+          background: white;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+      .checkbox-item:hover {
+          border-color: #667eea;
+          background: #f8f9ff;
+      }
+      .checkbox-item input[type="checkbox"] {
+          width: auto;
+          margin: 0;
+      }
+      .checkbox-item label {
+          margin: 0;
+          cursor: pointer;
       }
       button {
-          background-color: #007bff;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
-          padding: 10px 20px;
+          padding: 15px 30px;
           border: none;
-          border-radius: 4px;
+          border-radius: 25px;
           cursor: pointer;
           font-size: 16px;
+          font-weight: 600;
           display: block;
           width: 100%;
+          transition: transform 0.3s ease;
       }
-      button:hover { background-color: #0056b3; }
-      .error-message { color: red; font-size: 0.9em; margin-top: 5px; }
-      .success-message { color: green; font-weight: bold; text-align: center; margin-bottom: 20px; }
-      .error { border-color: red; }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+      .error-message {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+      .success-message {
+        color: #28a745;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #d4edda;
+        border-radius: 8px;
+      }
+      .error {
+        border-color: #dc3545;
+      }
+      .help-text {
+          font-size: 0.9em;
+          color: #6c757d;
+          margin-top: 5px;
+      }
+      .admin-notice {
+          background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+          border: 1px solid #ffc107;
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 25px;
+          text-align: center;
+      }
+      .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+      }
+      @media (max-width: 768px) {
+          .form-row {
+              grid-template-columns: 1fr;
+          }
+          .container {
+              margin: 10px;
+              padding: 20px;
+          }
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Configuration du Restaurant</h1>
+      <h1><i class="fas fa-cog"></i> Configuration du Restaurant</h1>
+
+      <div th:if="${isConfigured}" class="admin-notice">
+        <strong><i class="fas fa-info-circle"></i> Note:</strong> La
+        configuration est déjà définie. Seuls les administrateurs peuvent la
+        modifier.
+      </div>
 
       <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
       </div>
       <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${errorMessage}"></span>
       </div>
 
       <form
-        th:action="@{/admin/config}"
+        th:action="${isConfigured} ? @{/admin/config} : @{/config}"
         th:object="${restaurantConfig}"
         method="post"
         enctype="multipart/form-data"
       >
-        <div class="form-group">
-          <label for="restaurantName"
-            >Nom du restaurant (Header & Titre des pages) :</label
-          >
-          <input
-            type="text"
-            id="restaurantName"
-            th:field="*{restaurantName}"
-            th:classappend="${#fields.hasErrors('restaurantName')} ? 'error'"
-          />
-          <p
-            th:if="${#fields.hasErrors('restaurantName')}"
-            th:errors="*{restaurantName}"
-            class="error-message"
-          ></p>
+        <div class="section">
+          <h3><i class="fas fa-store"></i> Informations Générales</h3>
+
+          <div class="form-group">
+            <label for="restaurantName">Nom du Restaurant *</label>
+            <input
+              type="text"
+              id="restaurantName"
+              th:field="*{restaurantName}"
+              placeholder="Ex: Le Petit Bistrot"
+              th:classappend="${#fields.hasErrors('restaurantName')} ? 'error'"
+            />
+            <p
+              th:if="${#fields.hasErrors('restaurantName')}"
+              th:errors="*{restaurantName}"
+              class="error-message"
+            ></p>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              th:field="*{description}"
+              placeholder="Décrivez votre restaurant, votre cuisine, votre ambiance..."
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="siteUrl">URL du Site Web</label>
+              <input
+                type="url"
+                id="siteUrl"
+                th:field="*{siteUrl}"
+                placeholder="Ex: https://www.monrestaurant.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="color">Couleur Principale</label>
+              <input
+                type="color"
+                id="color"
+                th:field="*{color}"
+                value="#667eea"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bannerPhoto">Photo de Bannière</label>
+            <input
+              type="file"
+              id="bannerPhoto"
+              name="bannerPhoto"
+              accept="image/*"
+            />
+            <div class="help-text">
+              Format recommandé: JPG, PNG. Taille max: 10MB.
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="siteUrl">URL du site :</label>
-          <input
-            type="url"
-            id="siteUrl"
-            th:field="*{siteUrl}"
-            placeholder="Ex: http://www.monsite.com"
-            th:classappend="${#fields.hasErrors('siteUrl')} ? 'error'"
-          />
-          <p
-            th:if="${#fields.hasErrors('siteUrl')}"
-            th:errors="*{siteUrl}"
-            class="error-message"
-          ></p>
+        <div class="section">
+          <h3><i class="fas fa-clock"></i> Horaires et Informations</h3>
+
+          <div class="form-group">
+            <label for="openingHours">Horaires d'Ouverture</label>
+            <textarea
+              id="openingHours"
+              th:field="*{openingHours}"
+              placeholder="Ex:&#10;Lundi - Vendredi: 12h-14h, 19h-22h&#10;Samedi - Dimanche: 12h-23h&#10;Fermé le mardi"
+            ></textarea>
+            <div class="help-text">
+              Utilisez des retours à la ligne pour séparer les jours.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="specialities">Spécialités</label>
+            <textarea
+              id="specialities"
+              th:field="*{specialities}"
+              placeholder="Ex: Cuisine française traditionnelle, Plats de saison, Desserts maison..."
+            ></textarea>
+            <div class="help-text">Décrivez vos spécialités culinaires.</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="averagePrice">Prix Moyen</label>
+              <input
+                type="text"
+                id="averagePrice"
+                th:field="*{averagePrice}"
+                placeholder="Ex: 25-35€"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="capacity">Capacité d'Accueil</label>
+              <input
+                type="number"
+                id="capacity"
+                th:field="*{capacity}"
+                placeholder="Ex: 50"
+                min="1"
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="color">Couleur pour liens, menus, boutons, etc. :</label>
-          <input
-            type="color"
-            id="color"
-            th:field="*{color}"
-            th:classappend="${#fields.hasErrors('color')} ? 'error'"
-          />
-          <p
-            th:if="${#fields.hasErrors('color')}"
-            th:errors="*{color}"
-            class="error-message"
-          ></p>
+        <div class="section">
+          <h3><i class="fas fa-address-book"></i> Informations de Contact</h3>
+
+          <div class="form-group">
+            <label for="address">Adresse</label>
+            <input
+              type="text"
+              id="address"
+              th:field="*{address}"
+              placeholder="Ex: 123 Rue de la Gastronomie, 75001 Paris"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Téléphone</label>
+              <input
+                type="tel"
+                id="phone"
+                th:field="*{phone}"
+                placeholder="Ex: 01 23 45 67 89"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                th:field="*{email}"
+                placeholder="Ex: contact@restaurant.com"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="socialMediaLinks">Liens Réseaux Sociaux</label>
+            <textarea
+              id="socialMediaLinks"
+              th:field="*{socialMediaLinks}"
+              placeholder='Ex:&#10;&lt;a href="https://facebook.com/monrestaurant"&gt;&lt;i class="fab fa-facebook"&gt;&lt;/i&gt; Facebook&lt;/a&gt;&#10;&lt;a href="https://instagram.com/monrestaurant"&gt;&lt;i class="fab fa-instagram"&gt;&lt;/i&gt; Instagram&lt;/a&gt;'
+            ></textarea>
+            <div class="help-text">
+              Utilisez du HTML pour formater les liens. Exemple: &lt;a
+              href="..."&gt;&lt;i class="fab fa-facebook"&gt;&lt;/i&gt;
+              Facebook&lt;/a&gt;
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="bannerPhoto">Photo de bannière (pour le header) :</label>
-          <input
-            type="file"
-            id="bannerPhoto"
-            th:field="*{bannerPhoto}"
-            accept="image/*"
-          />
-          <p
-            th:if="${#fields.hasErrors('bannerPhoto')}"
-            th:errors="*{bannerPhoto}"
-            class="error-message"
-          ></p>
+        <div class="section">
+          <h3><i class="fas fa-concierge-bell"></i> Services Disponibles</h3>
+
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="parkingAvailable"
+                th:field="*{parkingAvailable}"
+              />
+              <label for="parkingAvailable">Parking disponible</label>
+            </div>
+
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="deliveryAvailable"
+                th:field="*{deliveryAvailable}"
+              />
+              <label for="deliveryAvailable">Service de livraison</label>
+            </div>
+
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="takeawayAvailable"
+                th:field="*{takeawayAvailable}"
+              />
+              <label for="takeawayAvailable">À emporter</label>
+            </div>
+
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="reservationRequired"
+                th:field="*{reservationRequired}"
+              />
+              <label for="reservationRequired">Réservation conseillée</label>
+            </div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="adminPassword">Mot de passe Administrateur :</label>
-          <input
-            type="password"
-            id="adminPassword"
-            th:field="*{adminPassword}"
-            th:classappend="${#fields.hasErrors('adminPassword')} ? 'error'"
-          />
-          <p
-            th:if="${#fields.hasErrors('adminPassword')}"
-            th:errors="*{adminPassword}"
-            class="error-message"
-          ></p>
-          <small>Min : 8 caractères, 1 minuscule, 1 majuscule, 1 nombre.</small>
+        <div class="section">
+          <h3><i class="fas fa-user-shield"></i> Accès Administrateur</h3>
+
+          <div class="form-group">
+            <label for="adminUsername">Nom d'utilisateur Administrateur</label>
+            <input
+              type="text"
+              id="adminUsername"
+              th:field="*{adminUsername}"
+              placeholder="Ex: admin"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Mot de passe Administrateur</label>
+            <input
+              type="password"
+              id="adminPassword"
+              th:field="*{adminPassword}"
+              th:classappend="${#fields.hasErrors('adminPassword')} ? 'error'"
+              oninput="validatePassword()"
+            />
+            <p
+              th:if="${#fields.hasErrors('adminPassword')}"
+              th:errors="*{adminPassword}"
+              class="error-message"
+            ></p>
+            <div class="help-text">
+              Min : 8 caractères, 1 minuscule, 1 majuscule, 1 nombre.
+            </div>
+            <div
+              id="passwordValidation"
+              style="margin-top: 10px; font-size: 0.9em;"
+            ></div>
+          </div>
         </div>
 
-        <button type="submit">Enregistrer la Configuration</button>
+        <button type="submit" onclick="return validateForm()">
+          <i class="fas fa-save"></i> Enregistrer la Configuration
+        </button>
       </form>
     </div>
+
+    <script>
+      function validatePassword() {
+        const password = document.getElementById('adminPassword').value;
+        const validationDiv = document.getElementById('passwordValidation');
+
+        const hasMinLength = password.length >= 8;
+        const hasLowercase = /[a-z]/.test(password);
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+
+        let validationMessage = '';
+        let isValid = true;
+
+        if (!hasMinLength) {
+          validationMessage += '❌ Au moins 8 caractères<br>';
+          isValid = false;
+        } else {
+          validationMessage += '✅ Au moins 8 caractères<br>';
+        }
+
+        if (!hasLowercase) {
+          validationMessage += '❌ Au moins 1 minuscule<br>';
+          isValid = false;
+        } else {
+          validationMessage += '✅ Au moins 1 minuscule<br>';
+        }
+
+        if (!hasUppercase) {
+          validationMessage += '❌ Au moins 1 majuscule<br>';
+          isValid = false;
+        } else {
+          validationMessage += '✅ Au moins 1 majuscule<br>';
+        }
+
+        if (!hasNumber) {
+          validationMessage += '❌ Au moins 1 nombre<br>';
+          isValid = false;
+        } else {
+          validationMessage += '✅ Au moins 1 nombre<br>';
+        }
+
+        validationDiv.innerHTML = validationMessage;
+
+        if (password.length > 0) {
+          validationDiv.style.display = 'block';
+        } else {
+          validationDiv.style.display = 'none';
+        }
+
+        return isValid;
+      }
+
+      function validateForm() {
+        const password = document.getElementById('adminPassword').value;
+
+        // Only validate password if it's not empty (for editing existing config)
+        if (password.length > 0) {
+          const isValid = validatePassword();
+          if (!isValid) {
+            alert('Veuillez corriger les erreurs de validation du mot de passe.');
+            return false;
+          }
+        }
+
+        return true;
+      }
+    </script>
   </body>
 </html>

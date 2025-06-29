@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${plat.name}">Détail du plat</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; color: #333; }
+      .container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); padding: 2rem; }
+      .plat-header { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; }
+      .plat-photo { flex: 0 0 250px; }
+      .plat-photo img { width: 250px; height: 180px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px rgba(102,126,234,0.12); }
+      .plat-info { flex: 1; }
+      .plat-info h1 { color: #667eea; font-size: 2.2rem; margin-bottom: 0.5rem; }
+      .plat-info .price { font-size: 1.3rem; color: #764ba2; font-weight: bold; margin-bottom: 0.5rem; }
+      .plat-info .desc { color: #555; margin-bottom: 1rem; }
+      .plat-info .allergens { margin-bottom: 1rem; }
+      .allergen-tag { display: inline-block; background: #ffe082; color: #b26a00; border-radius: 8px; padding: 0.2rem 0.7rem; font-size: 0.95rem; margin-right: 0.5rem; margin-bottom: 0.2rem; }
+      .plat-actions { margin-top: 1.5rem; }
+      .btn { display: inline-block; padding: 10px 22px; border-radius: 25px; font-weight: 600; text-decoration: none; font-size: 1rem; transition: all 0.3s; border: none; cursor: pointer; }
+      .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+      .btn-primary:hover { background: #667eea; }
+      .btn-secondary { background: #6c757d; color: white; }
+      .btn-secondary:hover { background: #5a6268; }
+      .reviews-section { margin-top: 3rem; }
+      .reviews-section h2 { color: #764ba2; margin-bottom: 1.5rem; }
+      .reviews-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+      .review-card { background: #f8f9fa; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(102,126,234,0.08); }
+      .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
+      .reviewer { font-weight: 600; color: #333; }
+      .review-date { color: #888; font-size: 0.95rem; }
+      .stars { color: #ffc107; font-size: 1.1rem; }
+      .review-comment { color: #555; font-style: italic; margin-top: 0.5rem; }
+      .empty-state { text-align: center; color: #aaa; margin: 2rem 0; }
+      @media (max-width: 700px) { .plat-header { flex-direction: column; align-items: flex-start; } .plat-photo img { width: 100%; height: auto; } }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="plat-header">
+        <div class="plat-photo">
+          <img
+            th:if="${plat.photo != null}"
+            th:src="@{'/uploads/plats/' + ${plat.photo}}"
+            alt="Photo du plat"
+          />
+          <img
+            th:if="${plat.photo == null}"
+            src="https://via.placeholder.com/250x180?text=Plat"
+            alt="Photo du plat"
+          />
+        </div>
+        <div class="plat-info">
+          <h1 th:text="${plat.name}">Nom du plat</h1>
+          <div
+            class="price"
+            th:if="${plat.price != null}"
+            th:text="${#strings.concat(plat.price, '€')}"
+          >
+            25€
+          </div>
+          <div
+            class="desc"
+            th:if="${plat.description != null and !plat.description.isEmpty()}"
+            th:text="${plat.description}"
+          >
+            Description du plat
+          </div>
+          <div
+            class="allergens"
+            th:if="${plat.allergens != null and !plat.allergens.isEmpty()}"
+          >
+            <span class="allergen-tag" th:text="${plat.allergens}"
+              >Allergènes</span
+            >
+          </div>
+          <div class="plat-actions">
+            <a
+              th:href="@{/review/{platId}(platId=${plat.id})}"
+              class="btn btn-primary"
+              ><i class="fas fa-star"></i> Laisser un avis</a
+            >
+            <a href="/carte" class="btn btn-secondary"
+              ><i class="fas fa-arrow-left"></i> Retour à la carte</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="reviews-section">
+        <h2><i class="fas fa-comments"></i> Avis sur ce plat</h2>
+        <div
+          th:if="${reviews != null and !reviews.isEmpty()}"
+          class="reviews-list"
+        >
+          <div th:each="review : ${reviews}" class="review-card">
+            <div class="review-header">
+              <span class="reviewer" th:text="${review.name}">Nom</span>
+              <span
+                class="review-date"
+                th:text="${#temporals.format(review.date, 'dd/MM/yyyy')}"
+                >01/01/2024</span
+              >
+            </div>
+            <div class="stars">
+              <span th:each="i : ${#numbers.sequence(1, review.note)}"
+                ><i class="fas fa-star"></i
+              ></span>
+              <span th:each="i : ${#numbers.sequence(review.note + 1, 5)}"
+                ><i class="far fa-star"></i
+              ></span>
+            </div>
+            <div
+              class="review-comment"
+              th:if="${review.comment != null and !review.comment.isEmpty()}"
+              th:text="${review.comment}"
+            >
+              Commentaire
+            </div>
+          </div>
+        </div>
+        <div
+          th:unless="${reviews != null and !reviews.isEmpty()}"
+          class="empty-state"
+        >
+          <i class="fas fa-star"></i>
+          <p>Aucun avis pour ce plat pour l'instant.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

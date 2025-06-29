@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html
+  lang="fr"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title}">Mon Restaurant</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          background-color: #f8f9fa;
+      }
+
+      .header {
+          color: white;
+          text-align: center;
+          padding: 3rem 2rem;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.3);
+          z-index: 1;
+      }
+
+      .header-content {
+          position: relative;
+          z-index: 2;
+      }
+
+      .header h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+
+      .header p {
+          font-size: 1.3rem;
+          opacity: 0.9;
+          max-width: 600px;
+          margin: 0 auto;
+      }
+
+      .banner-image {
+          width: 100%;
+          height: 300px;
+          object-fit: cover;
+          margin-bottom: 2rem;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 2rem;
+      }
+
+      .welcome-section {
+          text-align: center;
+          margin-bottom: 4rem;
+          padding: 3rem;
+          background: white;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+
+      .welcome-section h2 {
+          color: #333;
+          font-size: 2.5rem;
+          margin-bottom: 1.5rem;
+      }
+
+      .welcome-section p {
+          font-size: 1.2rem;
+          color: #666;
+          max-width: 800px;
+          margin: 0 auto 2rem;
+      }
+
+      .info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+          margin-bottom: 4rem;
+      }
+
+      .info-card {
+          background: white;
+          padding: 2rem;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          transition: transform 0.3s ease;
+      }
+
+      .info-card:hover {
+          transform: translateY(-5px);
+      }
+
+      .info-card h3 {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .info-card p {
+          color: #666;
+          margin-bottom: 0.5rem;
+      }
+
+      .info-card ul {
+          list-style: none;
+          padding: 0;
+      }
+
+      .info-card li {
+          padding: 0.5rem 0;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .info-card li:last-child {
+          border-bottom: none;
+      }
+
+      .feature-badge {
+          display: inline-block;
+          color: white;
+          padding: 0.3rem 0.8rem;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          margin: 0.2rem;
+      }
+
+      .feature-badge.unavailable {
+          background: #dc3545;
+      }
+
+      .contact-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin: 0.5rem 0;
+      }
+
+      .contact-info a {
+          text-decoration: none;
+      }
+
+      .contact-info a:hover {
+          text-decoration: underline;
+      }
+
+      .opening-hours {
+          font-family: monospace;
+          background: #f8f9fa;
+          padding: 1rem;
+          border-radius: 8px;
+          border-left: 4px solid;
+      }
+
+      .admin-section {
+          background: #f8f9fa;
+          border-radius: 15px;
+          padding: 2rem;
+          margin: 2rem 0;
+          text-align: center;
+          border: 2px solid #e9ecef;
+      }
+
+      .admin-section h3 {
+          color: #495057;
+          margin-bottom: 1rem;
+      }
+
+      .admin-btn {
+          display: inline-block;
+          padding: 0.75rem 1.5rem;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          margin: 0.5rem;
+      }
+
+      .admin-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+
+      .reviews-section {
+          background: white;
+          padding: 3rem;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+          margin-bottom: 4rem;
+      }
+
+      .reviews-section h2 {
+          text-align: center;
+          margin-bottom: 2rem;
+          font-size: 2.5rem;
+      }
+
+      .reviews-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+      }
+
+      .review-card {
+          background: #f8f9fa;
+          padding: 1.5rem;
+          border-radius: 10px;
+          border-left: 4px solid;
+      }
+
+      .review-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+      }
+
+      .review-author {
+          font-weight: 600;
+          color: #333;
+      }
+
+      .review-date {
+          color: #666;
+          font-size: 0.9rem;
+      }
+
+      .review-rating {
+          color: #ffc107;
+          margin-bottom: 0.5rem;
+      }
+
+      .review-comment {
+          color: #666;
+          font-style: italic;
+      }
+
+      .review-plat {
+          margin-top: 0.5rem;
+          font-size: 0.9rem;
+          color: #888;
+      }
+
+      .cta-section {
+          text-align: center;
+          padding: 3rem;
+          background: white;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+
+      .cta-section h2 {
+          margin-bottom: 1rem;
+          font-size: 2.5rem;
+      }
+
+      .cta-section p {
+          font-size: 1.2rem;
+          color: #666;
+          margin-bottom: 2rem;
+      }
+
+      .cta-btn {
+          display: inline-block;
+          padding: 1rem 2rem;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 1.1rem;
+          transition: all 0.3s ease;
+      }
+
+      .cta-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+
+      .footer {
+          text-align: center;
+          padding: 2rem;
+          color: #666;
+          margin-top: 4rem;
+      }
+
+      @media (max-width: 768px) {
+          .header h1 {
+              font-size: 2rem;
+          }
+
+          .welcome-section h2 {
+              font-size: 2rem;
+          }
+
+          .info-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .reviews-grid {
+              grid-template-columns: 1fr;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="header"
+      th:style="'background: linear-gradient(135deg, ' + ${config.color != null ? config.color : '#667eea'} + ', ' + ${config.color != null ? config.color : '#667eea'} + 'dd);'"
+    >
+      <div class="header-content">
+        <h1 th:text="${config.restaurantName}">Mon Restaurant</h1>
+        <p
+          th:text="${config.description != null ? config.description : 'Découvrez notre cuisine exceptionnelle'}"
+        >
+          Découvrez notre cuisine exceptionnelle
+        </p>
+      </div>
+    </div>
+
+    <img
+      th:if="${config.bannerPhotoPath != null}"
+      th:src="@{'/uploads/config/' + ${config.bannerPhotoPath}}"
+      alt="Banner"
+      class="banner-image"
+    />
+
+    <div class="container">
+      <div class="welcome-section">
+        <h2
+          th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+        >
+          Bienvenue chez
+          <span th:text="${config.restaurantName}">Mon Restaurant</span>
+        </h2>
+        <p
+          th:text="${config.description != null ? config.description : 'Découvrez notre cuisine exceptionnelle préparée avec des ingrédients frais et de qualité. Notre équipe passionnée vous accueille dans un cadre chaleureux et convivial.'}"
+        >
+          Découvrez notre cuisine exceptionnelle préparée avec des ingrédients
+          frais et de qualité. Notre équipe passionnée vous accueille dans un
+          cadre chaleureux et convivial.
+        </p>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card" th:if="${config.openingHours != null}">
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-clock"></i> Horaires d'ouverture
+          </h3>
+          <div
+            class="opening-hours"
+            th:style="'border-left-color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <pre th:text="${config.openingHours}">
+Lundi - Vendredi: 12h-14h, 19h-22h
+Samedi - Dimanche: 12h-23h</pre
+            >
+          </div>
+        </div>
+
+        <div
+          class="info-card"
+          th:if="${config.address != null or config.phone != null or config.email != null}"
+        >
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-map-marker-alt"></i> Informations de contact
+          </h3>
+          <div class="contact-info" th:if="${config.address != null}">
+            <i class="fas fa-map-marker-alt"></i>
+            <span th:text="${config.address}">123 Rue de la Gastronomie</span>
+          </div>
+          <div class="contact-info" th:if="${config.phone != null}">
+            <i class="fas fa-phone"></i>
+            <a th:href="'tel:' + ${config.phone}" th:text="${config.phone}"
+              >01 23 45 67 89</a
+            >
+          </div>
+          <div class="contact-info" th:if="${config.email != null}">
+            <i class="fas fa-envelope"></i>
+            <a th:href="'mailto:' + ${config.email}" th:text="${config.email}"
+              >contact@restaurant.com</a
+            >
+          </div>
+        </div>
+
+        <div class="info-card" th:if="${config.specialities != null}">
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-utensils"></i> Nos spécialités
+          </h3>
+          <div th:utext="${config.specialities}">
+            <span class="feature-badge" style="background: #28a745;"
+              >Cuisine française</span
+            >
+            <span class="feature-badge" style="background: #17a2b8;"
+              >Plats traditionnels</span
+            >
+            <span class="feature-badge" style="background: #ffc107;"
+              >Desserts maison</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="info-card"
+          th:if="${config.averagePrice != null or config.capacity != null}"
+        >
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-info-circle"></i> Informations pratiques
+          </h3>
+          <p th:if="${config.averagePrice != null}">
+            <strong>Prix moyen:</strong>
+            <span th:text="${config.averagePrice}">25-35€</span>
+          </p>
+          <p th:if="${config.capacity != null}">
+            <strong>Capacité:</strong>
+            <span th:text="${config.capacity}">50</span> personnes
+          </p>
+        </div>
+
+        <div
+          class="info-card"
+          th:if="${config.parkingAvailable != null or config.deliveryAvailable != null or config.takeawayAvailable != null or config.reservationRequired != null}"
+        >
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-star"></i> Services
+          </h3>
+          <ul>
+            <li th:if="${config.parkingAvailable != null}">
+              <i class="fas fa-parking"></i>
+              <span
+                th:text="${config.parkingAvailable ? 'Parking disponible' : 'Pas de parking'}"
+                >Parking disponible</span
+              >
+              <span
+                class="feature-badge"
+                th:class="${config.parkingAvailable ? 'feature-badge' : 'feature-badge unavailable'}"
+                th:style="${config.parkingAvailable ? 'background: #28a745;' : 'background: #dc3545;'}"
+              >
+                <span th:text="${config.parkingAvailable ? 'Oui' : 'Non'}"
+                  >Oui</span
+                >
+              </span>
+            </li>
+            <li th:if="${config.deliveryAvailable != null}">
+              <i class="fas fa-truck"></i>
+              <span
+                th:text="${config.deliveryAvailable ? 'Livraison disponible' : 'Pas de livraison'}"
+                >Livraison disponible</span
+              >
+              <span
+                class="feature-badge"
+                th:class="${config.deliveryAvailable ? 'feature-badge' : 'feature-badge unavailable'}"
+                th:style="${config.deliveryAvailable ? 'background: #28a745;' : 'background: #dc3545;'}"
+              >
+                <span th:text="${config.deliveryAvailable ? 'Oui' : 'Non'}"
+                  >Oui</span
+                >
+              </span>
+            </li>
+            <li th:if="${config.takeawayAvailable != null}">
+              <i class="fas fa-shopping-bag"></i>
+              <span
+                th:text="${config.takeawayAvailable ? 'Emporter disponible' : 'Pas demporter'}"
+                >Emporter disponible</span
+              >
+              <span
+                class="feature-badge"
+                th:class="${config.takeawayAvailable ? 'feature-badge' : 'feature-badge unavailable'}"
+                th:style="${config.takeawayAvailable ? 'background: #28a745;' : 'background: #dc3545;'}"
+              >
+                <span th:text="${config.takeawayAvailable ? 'Oui' : 'Non'}"
+                  >Oui</span
+                >
+              </span>
+            </li>
+            <li th:if="${config.reservationRequired != null}">
+              <i class="fas fa-calendar-check"></i>
+              <span
+                th:text="${config.reservationRequired ? 'Réservation recommandée' : 'Réservation non obligatoire'}"
+                >Réservation recommandée</span
+              >
+              <span
+                class="feature-badge"
+                th:class="${config.reservationRequired ? 'feature-badge' : 'feature-badge unavailable'}"
+                th:style="${config.reservationRequired ? 'background: #ffc107;' : 'background: #28a745;'}"
+              >
+                <span
+                  th:text="${config.reservationRequired ? 'Recommandé' : 'Non obligatoire'}"
+                  >Recommandé</span
+                >
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="info-card" th:if="${config.socialMediaLinks != null}">
+          <h3
+            th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <i class="fas fa-share-alt"></i> Suivez-nous
+          </h3>
+          <div th:utext="${config.socialMediaLinks}">
+            <a href="#" class="contact-info"
+              ><i class="fab fa-facebook"></i> Facebook</a
+            >
+            <a href="#" class="contact-info"
+              ><i class="fab fa-instagram"></i> Instagram</a
+            >
+            <a href="#" class="contact-info"
+              ><i class="fab fa-twitter"></i> Twitter</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="reviews-section"
+        th:if="${latestReviews != null and !latestReviews.isEmpty()}"
+      >
+        <h2
+          th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+        >
+          <i class="fas fa-star"></i> Avis récents
+        </h2>
+        <div class="reviews-grid">
+          <div
+            th:each="review : ${latestReviews}"
+            class="review-card"
+            th:style="'border-left-color: ' + ${config.color != null ? config.color : '#667eea'}"
+          >
+            <div class="review-header">
+              <span class="review-author" th:text="${review.name}"
+                >Nom du client</span
+              >
+              <span
+                class="review-date"
+                th:text="${#temporals.format(review.date, 'dd/MM/yyyy')}"
+                >01/01/2024</span
+              >
+            </div>
+            <div class="review-rating">
+              <span th:each="i : ${#numbers.sequence(1, 5)}">
+                <i
+                  th:class="${i <= review.note ? 'fas fa-star' : 'far fa-star'}"
+                ></i>
+              </span>
+            </div>
+            <p
+              class="review-comment"
+              th:text="${review.comment != null ? review.comment : 'Aucun commentaire'}"
+            >
+              Commentaire du client
+            </p>
+            <div class="review-plat" th:if="${review.plat != null}">
+              <i class="fas fa-utensils"></i> Plat:
+              <span th:text="${review.plat.name}">Nom du plat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section" sec:authorize="hasRole('ADMIN')">
+        <h3>Administration</h3>
+        <a
+          href="/admin"
+          class="admin-btn"
+          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white;'"
+          >Accéder au Dashboard</a
+        >
+      </div>
+
+      <div class="cta-section">
+        <h2
+          th:style="'color: ' + ${config.color != null ? config.color : '#667eea'}"
+        >
+          Découvrez notre carte
+        </h2>
+        <p>
+          Explorez nos délicieux plats et menus préparés avec des ingrédients
+          frais et de qualité
+        </p>
+        <a
+          href="/carte"
+          class="cta-btn"
+          th:style="'background: ' + ${config.color != null ? config.color : '#667eea'} + '; color: white;'"
+          >Voir la carte</a
+        >
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>
+        &copy; 2024
+        <span th:text="${config.restaurantName}">Mon Restaurant</span>. Tous
+        droits réservés.
+      </p>
+    </div>
+  </body>
+</html>

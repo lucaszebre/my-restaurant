@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Plats</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .header { background-color: #333; color: white; padding: 20px; margin-bottom: 20px; }
+      .container { max-width: 1600px; margin: 0 auto; }
+      .btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin: 5px; }
+      .btn-primary { background-color: #007bff; color: white; }
+      .btn-success { background-color: #28a745; color: white; }
+      .btn-warning { background-color: #ffc107; color: black; }
+      .btn-danger { background-color: #dc3545; color: white; }
+      .btn-secondary { background-color: #6c757d; color: white; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+      th { background-color: #f2f2f2; }
+      .actions { white-space: nowrap; }
+      .price { font-weight: bold; color: #28a745; }
+      .description { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .allergens { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9em; }
+      .photo-thumbnail { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+      .no-photo { width: 50px; height: 50px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 0.8em; }
+      .association { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9em; }
+      .category { font-weight: bold; color: #495057; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Gestion des Plats</h1>
+      <a href="/admin" class="btn btn-secondary">Retour au Dashboard</a>
+    </div>
+
+    <div class="container">
+      <div style="margin-bottom: 20px;">
+        <a href="/admin/plats/new" class="btn btn-success">Nouveau Plat</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Photo</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Allergènes</th>
+            <th>Menu</th>
+            <th>Carte</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="plat : ${plats}">
+            <td th:text="${plat.id}">1</td>
+            <td>
+              <img
+                th:if="${plat.photo != null && !plat.photo.isEmpty()}"
+                th:src="@{'/uploads/plats/' + ${plat.photo}}"
+                class="photo-thumbnail"
+                alt="Photo du plat"
+              />
+              <div
+                th:unless="${plat.photo != null && !plat.photo.isEmpty()}"
+                class="no-photo"
+              >
+                Aucune photo
+              </div>
+            </td>
+            <td th:text="${plat.name}">Steak frites</td>
+            <td
+              class="category"
+              th:text="${plat.category != null ? plat.category : 'Non définie'}"
+            >
+              Plats principaux
+            </td>
+            <td
+              class="description"
+              th:text="${plat.description != null ? plat.description : 'Aucune description'}"
+            >
+              Description du plat
+            </td>
+            <td class="price" th:text="${plat.price + ' €'}">25.00 €</td>
+            <td
+              class="allergens"
+              th:text="${plat.allergens != null ? plat.allergens : 'Aucun allergène'}"
+            >
+              Allergènes
+            </td>
+            <td
+              class="association"
+              th:text="${plat.menu != null ? plat.menu.name : 'Aucun menu'}"
+            >
+              Menu principal
+            </td>
+            <td
+              class="association"
+              th:text="${plat.carte != null ? plat.carte.name : 'Aucune carte'}"
+            >
+              Carte principale
+            </td>
+            <td class="actions">
+              <a
+                th:href="@{/admin/plats/edit/{id}(id=${plat.id})}"
+                class="btn btn-warning"
+                >Modifier</a
+              >
+              <form
+                th:action="@{/admin/plats/delete/{id}(id=${plat.id})}"
+                method="post"
+                style="display: inline;"
+                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?');"
+              >
+                <button type="submit" class="btn btn-danger">Supprimer</button>
+              </form>
+              <a
+                th:href="@{/review/{platId}(platId=${plat.id})}"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-star"></i> Laisser un avis
+              </a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(plats)}">
+            <td
+              colspan="10"
+              style="text-align: center; padding: 20px; color: #666;"
+            >
+              Aucun plat trouvé.
+              <a href="/admin/plats/new">Créer le premier plat</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

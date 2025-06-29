@@ -25,7 +25,7 @@ public class UserController {
         return userRepository.findById(id).orElseThrow(()->new RuntimeException("no user found"));
     }
 
-    @GetMapping()
+    @GetMapping("/users")
     public List<User> getUniqUser(){
         return userRepository.findAll();
     }
@@ -35,13 +35,11 @@ public class UserController {
     }
 
     @GetMapping("/user/userProfile")
-    @PreAuthorize("hasRole('USER')")  // Use hasRole for role-based access control
     public String userProfile() {
         return "Welcome to User Profile";
     }
 
     @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasRole('ADMIN')")  // Use hasRole for role-based access control
     public String adminProfile() {
         return "Welcome to Admin Profile";
     }

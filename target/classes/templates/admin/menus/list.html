@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Menus</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .header { background-color: #333; color: white; padding: 20px; margin-bottom: 20px; }
+      .container { max-width: 1200px; margin: 0 auto; }
+      .btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin: 5px; }
+      .btn-primary { background-color: #007bff; color: white; }
+      .btn-success { background-color: #28a745; color: white; }
+      .btn-warning { background-color: #ffc107; color: black; }
+      .btn-danger { background-color: #dc3545; color: white; }
+      .btn-secondary { background-color: #6c757d; color: white; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+      th { background-color: #f2f2f2; }
+      .status-active { color: #28a745; font-weight: bold; }
+      .status-inactive { color: #dc3545; font-weight: bold; }
+      .actions { white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Gestion des Menus</h1>
+      <a href="/admin" class="btn btn-secondary">Retour au Dashboard</a>
+    </div>
+
+    <div class="container">
+      <div style="margin-bottom: 20px;">
+        <a href="/admin/menus/new" class="btn btn-success">Nouveau Menu</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Carte</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="menu : ${menus}">
+            <td th:text="${menu.id}">1</td>
+            <td th:text="${menu.name}">Menu du jour</td>
+            <td th:text="${menu.description}">Description du menu</td>
+            <td
+              th:text="${menu.price != null ? menu.price + ' €' : 'Non défini'}"
+            >
+              25.00 €
+            </td>
+            <td th:text="${menu.carte != null ? menu.carte.name : 'Aucune'}">
+              Carte principale
+            </td>
+            <td>
+              <span th:if="${menu.active}" class="status-active">Actif</span>
+              <span th:unless="${menu.active}" class="status-inactive"
+                >Inactif</span
+              >
+            </td>
+            <td class="actions">
+              <a
+                th:href="@{/admin/menus/edit/{id}(id=${menu.id})}"
+                class="btn btn-warning"
+                >Modifier</a
+              >
+              <form
+                th:action="@{/admin/menus/toggle/{id}(id=${menu.id})}"
+                method="post"
+                style="display: inline;"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-secondary"
+                  th:text="${menu.active ? 'Désactiver' : 'Activer'}"
+                >
+                  Toggle
+                </button>
+              </form>
+              <form
+                th:action="@{/admin/menus/delete/{id}(id=${menu.id})}"
+                method="post"
+                style="display: inline;"
+                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?');"
+              >
+                <button type="submit" class="btn btn-danger">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(menus)}">
+            <td
+              colspan="7"
+              style="text-align: center; padding: 20px; color: #666;"
+            >
+              Aucun menu trouvé.
+              <a href="/admin/menus/new">Créer le premier menu</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
